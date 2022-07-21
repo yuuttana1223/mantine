@@ -16,7 +16,7 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@*": ["src/*"]
+      "~/*": ["src/*"]
     },
     "plugins": [{ "name": "eslint-plugin-import-access" }]
   },

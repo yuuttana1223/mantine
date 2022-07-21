@@ -1,8 +1,15 @@
-import "@style/tailwind.css";
+import { MantineOriginalProvider, ReactQueryProvider } from "~/provider";
+import "~/style/tailwind.css";
 import type { AppProps } from "next/app";
 
-function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
+const App = ({ Component, pageProps }: AppProps) => {
+  return (
+    <ReactQueryProvider>
+      <MantineOriginalProvider>
+        <Component {...pageProps} />
+      </MantineOriginalProvider>
+    </ReactQueryProvider>
+  );
+};
 
 export default App;

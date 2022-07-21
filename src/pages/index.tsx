@@ -1,15 +1,12 @@
-import { Root } from "@pages-component/Root";
+import { Layout } from "~/layout";
+import { Root } from "~/pages-component/Root";
 import type { NextPage } from "next";
-import Head from "next/head";
 
 const RootPage: NextPage = () => {
   return (
-    <>
-      <Head>
-        <title>Root</title>
-      </Head>
+    <Layout title="root">
       <Root />
-    </>
+    </Layout>
   );
 };
 
