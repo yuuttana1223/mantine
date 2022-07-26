@@ -8,9 +8,7 @@ export const PATH = {
     SIGN_IN: "/users/sign-in",
     SIGN_UP: "/users/sign-up",
   },
+  TODOS: {
+    INDEX: "/todos",
+  },
 } as const;
-
-type RootPath = typeof PATH.ROOT;
-type MantinePath = typeof PATH.MANTINE[keyof typeof PATH.MANTINE];
-type UsersPath = typeof PATH.USERS[keyof typeof PATH.USERS];
-export type Path = RootPath | MantinePath | UsersPath;

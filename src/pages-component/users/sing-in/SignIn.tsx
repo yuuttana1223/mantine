@@ -1,25 +1,19 @@
 import Link from "next/link";
 import { useForm, zodResolver } from "@mantine/form";
-import { useState } from "react";
-import {
-  Alert,
-  Anchor,
-  Button,
-  Group,
-  PasswordInput,
-  TextInput,
-} from "@mantine/core";
-import { signInSchema, supabase } from "~/lib";
-import { ApiError } from "@supabase/supabase-js";
-import { EMAIL, PASSWORD, PATH } from "~/constant";
-import { ShieldCheck, AlertCircle } from "tabler-icons-react";
+import { useState, useCallback } from "react";
+import { Anchor, Button, Group, PasswordInput, TextInput } from "@mantine/core";
+import { FormData, signInSchema, supabase } from "~/lib";
+import { EMAIL, PASSWORD, PATH } from "~/const";
+import { ShieldCheck } from "tabler-icons-react";
 import { useStore } from "~/store/store";
 import { useRouter } from "next/router";
 import { Layout } from "~/layout";
+import { AlertMessage } from "~/component/Feedback/AlertMessage";
+import { ApiError } from "~/model/error";
 
 export const SignIn = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<ApiError | null>(null);
+  const [error, setError] = useState<Error | null>(null);
   const setSession = useStore((state) => state.setSession);
   const { push } = useRouter();
   const { onSubmit, getInputProps } = useForm({
@@ -30,50 +24,52 @@ export const SignIn = () => {
     },
   });
 
-  const handleSignIn = onSubmit(async ({ email, password }) => {
-    setLoading(true);
-    const { session, error } = await supabase.auth.signIn({
-      email,
-      password,
-    });
-    if (error) {
-      setError(error);
-    } else {
-      setSession(session);
-      await push(PATH.ROOT);
-    }
-    setLoading(false);
-  });
+  const handleSignIn = useCallback(
+    async ({ email, password }: Omit<FormData, "age">) => {
+      setLoading(true);
+      try {
+        const { session, error } = await supabase.auth.signIn({
+          email,
+          password,
+        });
+        if (error) {
+          throw new ApiError({ ...error });
+        } else {
+          setSession(session);
+          await push(PATH.ROOT);
+        }
+      } catch (error) {
+        if (error instanceof ApiError) {
+          setError(error);
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [push, setSession]
+  );
 
   return (
     <Layout title="sign in">
       <Group direction="column" position="center">
         <ShieldCheck className="h-16 w-16 text-blue-500" />
         {error && (
-          <Alert
-            mt="md"
-            icon={<AlertCircle className="text-pink-500" />}
-            title="Authorization Error"
-            color="red"
-            radius="md"
-          >
-            {error.message}
-          </Alert>
+          <AlertMessage title={error.name}>{error.message}</AlertMessage>
         )}
-        <form onSubmit={handleSignIn} className="w-96">
+        <form onSubmit={onSubmit(handleSignIn)} className="w-96">
           <TextInput
             label={EMAIL.LABEL}
             placeholder={EMAIL.PLACEHOLDER}
-            autoComplete="username"
-            {...getInputProps("email")}
+            autoComplete={EMAIL.AUTO_COMPLETE}
+            {...getInputProps(EMAIL.NAME)}
           />
           <PasswordInput
             label={PASSWORD.LABEL}
             placeholder={PASSWORD.PLACEHOLDER}
             mt="sm"
             description={PASSWORD.DESCRIPTION}
-            autoComplete="current-password"
-            {...getInputProps("password")}
+            autoComplete={PASSWORD.AUTO_COMPLETE}
+            {...getInputProps(PASSWORD.NAME)}
           />
           <Group position="apart" mt="xl">
             <Link href={PATH.USERS.SIGN_UP}>

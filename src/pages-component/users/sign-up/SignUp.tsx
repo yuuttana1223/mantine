@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { useForm, zodResolver } from "@mantine/form";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
-  Alert,
   Anchor,
   Button,
   Group,
@@ -10,13 +9,14 @@ import {
   PasswordInput,
   TextInput,
 } from "@mantine/core";
-import { signUpSchema, supabase } from "~/lib";
-import { ApiError } from "@supabase/supabase-js";
-import { EMAIL, MIN_AGE, PASSWORD, PATH } from "~/constant";
+import { FormData, signUpSchema, supabase } from "~/lib";
+import { EMAIL, MIN_AGE, PASSWORD, PATH } from "~/const";
 import { ShieldCheck, AlertCircle } from "tabler-icons-react";
 import { useRouter } from "next/router";
 import { useStore } from "~/store/store";
 import { Layout } from "~/layout";
+import { AlertMessage } from "~/component/Feedback/AlertMessage";
+import { ApiError } from "~/model/error";
 
 export const SignUp = () => {
   const [loading, setLoading] = useState(false);
@@ -32,50 +32,51 @@ export const SignUp = () => {
     },
   });
 
-  const handleSignUp = onSubmit(async ({ email, password, age }) => {
-    setLoading(true);
-    const { session, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-    if (error) {
-      setError(error);
-    } else {
-      setSession(session);
-      await push(PATH.ROOT);
-    }
-    setLoading(false);
-  });
+  const handleSignUp = useCallback(
+    async ({ email, password, age }: FormData) => {
+      try {
+        setLoading(true);
+        const { session, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+        });
+        if (error) {
+          throw new ApiError({ ...error });
+        }
+        setSession(session);
+        await push(PATH.ROOT);
+      } catch (error) {
+        if (error instanceof ApiError) {
+          setError(error);
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [push, setSession]
+  );
 
   return (
     <Layout title="sign up">
       <Group direction="column" position="center">
         <ShieldCheck className="h-16 w-16 text-blue-500" />
         {error && (
-          <Alert
-            mt="md"
-            icon={<AlertCircle className="text-pink-500" />}
-            title="Authorization Error"
-            color="red"
-            radius="md"
-          >
-            {error.message}
-          </Alert>
+          <AlertMessage title={error.name}>{error.message}</AlertMessage>
         )}
-        <form onSubmit={handleSignUp} className="w-96">
+        <form onSubmit={onSubmit(handleSignUp)} className="w-96">
           <TextInput
             label={EMAIL.LABEL}
             placeholder={EMAIL.PLACEHOLDER}
-            autoComplete="username"
-            {...getInputProps("email")}
+            autoComplete={EMAIL.AUTO_COMPLETE}
+            {...getInputProps(EMAIL.NAME)}
           />
           <PasswordInput
             label={PASSWORD.LABEL}
             placeholder={PASSWORD.PLACEHOLDER}
             mt="sm"
             description={PASSWORD.DESCRIPTION}
-            autoComplete="current-password"
-            {...getInputProps("password")}
+            autoComplete={PASSWORD.AUTO_COMPLETE}
+            {...getInputProps(PASSWORD.NAME)}
           />
           <NumberInput
             label="Age"

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MIN_AGE, PASSWORD } from "~/constant";
+import { MIN_AGE, PASSWORD } from "~/const";
 
 const emailValidator = z
   .string()
@@ -20,6 +20,12 @@ const passwordValidator = z
     /[@$!%*#?&]/,
     "Password should contain at least one special character"
   );
+
+export type FormData = {
+  email: string;
+  password: string;
+  age: number;
+};
 
 export const signUpSchema = z.object({
   email: emailValidator,

@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { ArrowBackUp } from "tabler-icons-react";
-import { Path } from "~/constant";
 import { FC } from "react";
 
 type BackLinkProps = {
-  href: Path;
+  href: string;
 };
 
 export const BackLink: FC<BackLinkProps> = ({ href }) => {

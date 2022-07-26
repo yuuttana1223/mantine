@@ -1,5 +1,5 @@
 import { Box, Button, Center, Group } from "@mantine/core";
-import { PATH } from "~/constant";
+import { PATH } from "~/const";
 import { BackLink } from "~/pages-component/mantine";
 
 export const GroupDemo = () => {

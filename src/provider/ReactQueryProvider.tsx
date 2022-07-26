@@ -10,6 +10,7 @@ const queryClient = new QueryClient({
       retry: false,
       // windowにフォーカスがあたったときにfetchするのをoffにする
       refetchOnWindowFocus: false,
+      suspense: true,
     },
   },
 });

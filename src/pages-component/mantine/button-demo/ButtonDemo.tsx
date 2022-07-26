@@ -1,6 +1,6 @@
 import { Button, Group, Box } from "@mantine/core";
 import { BrandGithub, ThreeDCubeSphere } from "tabler-icons-react";
-import { PATH } from "~/constant";
+import { PATH } from "~/const";
 import { BackLink } from "~/pages-component/mantine";
 
 export const ButtonDemo = () => {
