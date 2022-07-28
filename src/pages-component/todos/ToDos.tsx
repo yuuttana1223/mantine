@@ -1,5 +1,5 @@
+import { List, Stack, Title } from "@mantine/core";
 import { Layout } from "~/layout";
-import { List, ListItem, Stack, Title } from "@mantine/core";
 import { useQueryToDos } from "~/model/todo/useQueryToDos";
 
 export const ToDos = () => {
@@ -11,9 +11,9 @@ export const ToDos = () => {
         <Title>ToDos</Title>
         <List size="sm">
           {todos?.map((todo) => (
-            <ListItem key={todo.id} my="xs">
+            <List.Item key={todo.id} my="xs">
               {todo.title}
-            </ListItem>
+            </List.Item>
           ))}
         </List>
       </Stack>

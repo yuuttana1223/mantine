@@ -1,17 +1,13 @@
 import { NextPage } from "next";
-import { SignUp } from "~/pages-component/users/sign-up/SignUp";
+import { Avatar } from "~/pages-component/users/avatar/Avatar";
 import { AuthRoute } from "~/provider";
-import { Suspense } from "react";
-import { Loader } from "@mantine/core";
 
-const SingUpPage: NextPage = () => {
+const AvatarPage: NextPage = () => {
   return (
-    <Suspense fallback={<Loader />}>
-      <AuthRoute>
-        <SignUp />
-      </AuthRoute>
-    </Suspense>
+    <AuthRoute>
+      <Avatar />
+    </AuthRoute>
   );
 };
 
-export default SingUpPage;
+export default AvatarPage;

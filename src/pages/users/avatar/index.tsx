@@ -1,13 +1,13 @@
 import { NextPage } from "next";
-import { SignIn } from "~/pages-component/users/sing-in/SignIn";
 import { AuthRoute } from "~/provider";
+import { Avatar } from "~/pages-component/users/avatar/Avatar";
 
-const SingInPage: NextPage = () => {
+const AvatarPage: NextPage = () => {
   return (
     <AuthRoute>
-      <SignIn />
+      <Avatar />
     </AuthRoute>
   );
 };
 
-export default SingInPage;
+export default AvatarPage;

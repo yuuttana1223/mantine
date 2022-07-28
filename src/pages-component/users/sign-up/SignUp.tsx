@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useForm, zodResolver } from "@mantine/form";
 import { useState, useCallback } from "react";
 import {
   Anchor,
@@ -11,12 +10,13 @@ import {
 } from "@mantine/core";
 import { FormData, signUpSchema, supabase } from "~/lib";
 import { EMAIL, MIN_AGE, PASSWORD, PATH } from "~/const";
-import { ShieldCheck, AlertCircle } from "tabler-icons-react";
+import { ShieldCheck } from "tabler-icons-react";
 import { useRouter } from "next/router";
 import { useStore } from "~/store/store";
 import { Layout } from "~/layout";
 import { AlertMessage } from "~/component/Feedback/AlertMessage";
 import { ApiError } from "~/model/error";
+import { useForm, zodResolver } from "@mantine/form";
 
 export const SignUp = () => {
   const [loading, setLoading] = useState(false);
