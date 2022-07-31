@@ -8,12 +8,12 @@ import { useCoinHistory } from "~/hooks/crypto/useCoinHistory";
 
 export const Crypto = () => {
   const { date, handleChangeDate } = useDate(new Date());
-  const { coinHistory: bitcoin, isLoading: isBitcoinLoading } = useCoinHistory(
-    "bitcoin",
-    date
-  );
-  const { coinHistory: ethereum, isLoading: isEthereumLoading } =
-    useCoinHistory("ethereum", date);
+  const {
+    query: { data: bitcoin, isLoading: isBitcoinLoading },
+  } = useCoinHistory("bitcoin", date);
+  const {
+    query: { data: ethereum, isLoading: isEthereumLoading },
+  } = useCoinHistory("ethereum", date);
   const isLoading = useMemo(
     () => isBitcoinLoading || isEthereumLoading,
     [isBitcoinLoading, isEthereumLoading]

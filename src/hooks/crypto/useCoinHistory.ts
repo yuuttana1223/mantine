@@ -1,7 +1,7 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { getDate, getMonth, getYear } from "date-fns";
 import { apiUrl } from "~/const/api";
-import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 type Coin = {
   market_data: {
@@ -11,36 +11,41 @@ type Coin = {
   };
 };
 
+/**
+ * @param {id: string, date: Date | null} オブジェクト形式で引数を一つにしないとuseMutationの引数に入れれない
+ */
+const fetchCoinHistory = async ({
+  id,
+  date,
+}: {
+  id: string;
+  date: Date | null;
+}) => {
+  if (date === null) {
+    return;
+  }
+  const res = await axios.get<Coin>(
+    apiUrl.coinGecko.coins.getHistory(id, {
+      year: getYear(date),
+      month: getMonth(date) + 1,
+      day: getDate(date),
+    })
+  );
+  return res.data;
+};
+
 export const useCoinHistory = (id: string, date: Date | null) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [coinHistory, setCoinHistory] = useState<Coin>();
-  const [error, setError] = useState<AxiosError>();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchCoinHistory = async () => {
-      if (date === null) {
-        return;
-      }
-      try {
-        setIsLoading(true);
-        const res = await axios.get<Coin>(
-          apiUrl.coinGecko.coins.getHistory(id, {
-            year: getYear(date),
-            month: getMonth(date) + 1,
-            day: getDate(date),
-          })
-        );
-        setCoinHistory(res.data);
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          setError(error);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchCoinHistory();
-  }, [date, id]);
+  const query = useQuery([id], () => fetchCoinHistory({ id, date }));
 
-  return { coinHistory, isLoading, error };
+  const mutation = useMutation(fetchCoinHistory, {
+    onSuccess: (data) => {
+      if (data) {
+        queryClient.setQueryData([id], data);
+      }
+    },
+  });
+
+  return { query, mutation };
 };
