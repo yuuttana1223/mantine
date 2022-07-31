@@ -7,17 +7,14 @@ import { useDate } from "~/hooks/form/useDate";
 import { useCoinHistory } from "~/hooks/crypto/useCoinHistory";
 
 export const Crypto = () => {
-  const { date, handleChangeDate } = useDate(new Date());
+  const { date, handleChangeDate, isLoading } = useDate(new Date());
   const {
-    query: { data: bitcoin, isLoading: isBitcoinLoading },
+    query: { data: bitcoin },
   } = useCoinHistory("bitcoin", date);
   const {
-    query: { data: ethereum, isLoading: isEthereumLoading },
+    query: { data: ethereum },
   } = useCoinHistory("ethereum", date);
-  const isLoading = useMemo(
-    () => isBitcoinLoading || isEthereumLoading,
-    [isBitcoinLoading, isEthereumLoading]
-  );
+
   return (
     <Layout title="crypto">
       <Group direction="column" position="center">

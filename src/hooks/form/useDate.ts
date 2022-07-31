@@ -1,14 +1,14 @@
 import { useCallback, useState } from "react";
-import { useCoinHistory } from "../crypto/useCoinHistory";
+import { useCoinHistory } from "~/hooks/crypto/useCoinHistory";
 
 export const useDate = (initialState: Date | null) => {
   const [date, setDate] = useState<Date | null>(initialState);
   const {
-    mutation: { mutate: mutateBitcoin },
+    mutation: { mutate: mutateBitcoin, isLoading: isLoadingBitcoin },
   } = useCoinHistory("bitcoin", date);
 
   const {
-    mutation: { mutate: mutateEthereum },
+    mutation: { mutate: mutateEthereum, isLoading: isLoadingEthereum },
   } = useCoinHistory("ethereum", date);
 
   const handleChangeDate = useCallback(
@@ -20,5 +20,9 @@ export const useDate = (initialState: Date | null) => {
     [mutateBitcoin, mutateEthereum]
   );
 
-  return { date, handleChangeDate };
+  return {
+    date,
+    handleChangeDate,
+    isLoading: isLoadingBitcoin || isLoadingEthereum,
+  };
 };

@@ -37,7 +37,9 @@ const fetchCoinHistory = async ({
 export const useCoinHistory = (id: string, date: Date | null) => {
   const queryClient = useQueryClient();
 
-  const query = useQuery([id], () => fetchCoinHistory({ id, date }));
+  const query = useQuery([id], () => fetchCoinHistory({ id, date }), {
+    cacheTime: Infinity,
+  });
 
   const mutation = useMutation(fetchCoinHistory, {
     onSuccess: (data) => {
