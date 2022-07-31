@@ -1,13 +1,13 @@
 import { NextPage } from "next";
-import { Avatar } from "~/pages-component/users/avatar/Avatar";
+import { SignUp } from "~/pages-component/users/sign-up/SignUp";
 import { AuthRoute } from "~/provider";
 
-const AvatarPage: NextPage = () => {
+const SignUpPage: NextPage = () => {
   return (
     <AuthRoute>
-      <Avatar />
+      <SignUp />
     </AuthRoute>
   );
 };
 
-export default AvatarPage;
+export default SignUpPage;
